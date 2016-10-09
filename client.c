@@ -6,7 +6,7 @@ int main(int argc, char* argv[]){
     exit(1);
   }
 
-  char* buffer = (char*) malloc(sizeof(char));
+  char* buffer = (char*) malloc(2*sizeof(char));
   int client_socket;
   struct sockaddr_in addr;
 
@@ -31,12 +31,14 @@ int main(int argc, char* argv[]){
   do{
     scanf("%c", buffer); //Ask a character to user
 
-    if(send(client_socket, buffer, sizeof(char), 0) != 1){ //Send the character
+      buffer[1]= '\r'; //End of line character to be read by readLine()
+
+    if(send(client_socket, buffer, 2*sizeof(char), 0) != 2){ //Send the character
       perror("ERROR : can't send the character");
       exit(1);
     }
 
-    *buffer = 0 ;  //Reset the buffer
+    *buffer = *(buffer+1) = 0 ;  //Reset the buffer
 
     if(recv(client_socket, buffer, sizeof(char), 0) != 1){ //Read the server message
       perror("ERROR : can't recv the character");
